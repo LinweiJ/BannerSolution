@@ -1,5 +1,7 @@
 package com.lwj.widget.bannersolution;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,12 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bm.library.PhotoView;
 import com.bumptech.glide.Glide;
 import com.lwj.widget.bannerview.BannerInterpolator;
 import com.lwj.widget.bannerview.BannerPictureLoader;
 import com.lwj.widget.bannerview.BannerView;
 import com.lwj.widget.bannerview.OnBannerPageSelectedListener;
 import com.lwj.widget.bannerview.OnBannerPictureClickListener;
+import com.lwj.widget.picturebrowser.PictureBrowser;
+import com.lwj.widget.picturebrowser.PictureFragment;
+import com.lwj.widget.picturebrowser.PictureLoader;
 import com.lwj.widget.viewpagerindicator.ViewPagerIndicator;
 
 import java.util.ArrayList;
@@ -70,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
         mBannerView.setPictureClickListener(new OnBannerPictureClickListener() {
             @Override
             public void onPictureClick(Fragment fragment, int position, List<String> pictureUrl) {
-                Toast.makeText(MainActivity.this, "position:" + position + "pictureUrl" + pictureUrl.get(position),Toast.LENGTH_SHORT).show();
+                showPicture(position,pictureUrl);
+//                Toast.makeText(MainActivity.this, "position:" + position + "pictureUrl" + pictureUrl.get(position),Toast.LENGTH_SHORT).show();
             }
         });
         mBannerView.setOnBannerPageSelectedListener(new OnBannerPageSelectedListener() {
@@ -93,6 +100,33 @@ public class MainActivity extends AppCompatActivity {
         // if mBannerView.setCircle(true);无限循环
         mViewPagerIndicator.setViewPager(mBannerView.getViewPager(),true);
 
+    }
+
+
+    private void showPicture(int position,List<String> pictureUrl){
+        ArrayList<String> pictureUrls = new ArrayList<>();
+        pictureUrls.addAll(pictureUrl);
+        PictureLoader pictureLoader = new PictureLoader() {
+            @Override
+            public void showPicture(PictureFragment pictureFragment, PhotoView photoView, String pictureUrl) {
+                //使用Glide加载图片,可自行根据需求选用其他图片加载库
+                Glide.with(pictureFragment)
+                        .load(pictureUrl)
+                        .into(photoView);
+            }
+
+        };
+
+        PictureBrowser.Builder builder = new PictureBrowser.Builder();
+        builder.setFragmentManager(getSupportFragmentManager())
+                .setUrlList(pictureUrls)
+                .setStartIndex(position)
+                .initPictureLoader(pictureLoader)
+                .setShowDeleteIcon(true)
+                .setShowIndexHint(true)
+                .setCancelOutside(true)
+                .create()
+                .show();
     }
 
 
