@@ -13,6 +13,7 @@ import com.lwj.widget.bannerview.BannerPictureLoader;
 import com.lwj.widget.bannerview.BannerView;
 import com.lwj.widget.bannerview.OnBannerPageSelectedListener;
 import com.lwj.widget.bannerview.OnBannerPictureClickListener;
+import com.lwj.widget.viewpagerindicator.ViewPagerIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mTv_hint;
     private BannerView mBannerView;
+    private ViewPagerIndicator mViewPagerIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +39,11 @@ public class MainActivity extends AppCompatActivity {
 
         setupBannerView(mUrlList);
 
+        setupIndicator();
+
 
     }
+
 
     private void setupBannerView(ArrayList<String> mUrlList) {
 
@@ -47,10 +52,12 @@ public class MainActivity extends AppCompatActivity {
         mBannerView = (BannerView) findViewById(R.id.BannerView);
         mBannerView.setFragmentManager(getSupportFragmentManager());
         mBannerView.setPictureUrl(mUrlList);
+        //无限循环
         mBannerView.setCircle(true);
         mBannerView.setDurationFavor(4.0f);
         mBannerView.setInitItem(0);
         mBannerView.setInterpolatorType(BannerInterpolator.ACCELERATE_DECELERATE);
+        //图片加载方式,这里采用Glide
         mBannerView.setPictureLoader(new BannerPictureLoader() {
             @Override
             public void showPicture(Fragment fragment, ImageView pictureView, String pictureUrl) {
@@ -59,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                         .into(pictureView);
             }
         });
+        //点击事件
         mBannerView.setPictureClickListener(new OnBannerPictureClickListener() {
             @Override
             public void onPictureClick(Fragment fragment, int position, List<String> pictureUrl) {
@@ -71,21 +79,34 @@ public class MainActivity extends AppCompatActivity {
                 mTv_hint.setText("position"+position+"\n"+url);
             }
         });
+        //配置完成后,调用
         mBannerView.start();
     }
 
 
+    private void setupIndicator() {
+
+        mViewPagerIndicator = (ViewPagerIndicator) findViewById(R.id.indicator);
+
+        //真无限循环BannerView,配合BannerView,增加以下setViewPager
+        //https://github.com/LinweiJ/BannerView
+        // if mBannerView.setCircle(true);无限循环
+        mViewPagerIndicator.setViewPager(mBannerView.getViewPager(),true);
+
+    }
 
 
     @Override
     protected void onStart() {
         super.onStart();
+        //开始自动滚动
         mBannerView.startAutoPlay();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        //停止自动滚动
         mBannerView.stopAutoPlay();
     }
 }

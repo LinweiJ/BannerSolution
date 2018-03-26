@@ -29,6 +29,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
+        <com.lwj.widget.viewpagerindicator.ViewPagerIndicator
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#00efefef"
+            app:vpi_default_color="#efefef"
+            app:vpi_distance="800dp"
+            app:vpi_distanceType="BY_RADIUS"
+            app:vpi_indicatorType="CIRCLE_LINE"
+            app:vpi_length="24dp"
+            app:vpi_radius="6dp"
+            app:vpi_selected_color="#FF23EEF5"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="50dp"
+            />
         <TextView
             android:id="@+id/tv_hint"
             android:layout_width="match_parent"
@@ -36,6 +52,7 @@
             android:layout_gravity="bottom"
             android:background="#33000000"
             android:textColor="#ededed"
+            android:lines="2"
             android:padding="8dp"
             android:text="提示" />
     </com.lwj.widget.bannerview.BannerView>
